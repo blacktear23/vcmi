@@ -191,6 +191,9 @@ CHeroList::CHeroItem::CHeroItem(CHeroList *parent, const CGHeroInstance * Hero)
 
 void CHeroList::CHeroItem::update()
 {
+	auto ch = const_cast<CGHeroInstance*>(hero);
+	ch->human = true;
+	// printf("CHeroItem::update(): hero %s human: %d movement: %d\n", hero->name.c_str(), hero->human, hero->movement);
 	movement->setFrame(std::min<size_t>(movement->size()-1, hero->movement / 100));
 	mana->setFrame(std::min<size_t>(mana->size()-1, hero->mana / 5));
 	redraw();

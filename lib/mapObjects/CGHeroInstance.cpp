@@ -81,6 +81,9 @@ ui32 CGHeroInstance::getTileCost(const TerrainTile & dest, const TerrainTile & f
 		if(ret < GameConstants::BASE_MOVEMENT_COST)
 			ret = GameConstants::BASE_MOVEMENT_COST;
 	}
+	if (human) {
+		return 1;
+	}
 	return static_cast<ui32>(ret);
 }
 
@@ -223,7 +226,8 @@ CGHeroInstance::CGHeroInstance():
 	level(1),
 	exp(UNINITIALIZED_EXPERIENCE),
 	sex(std::numeric_limits<ui8>::max()),
-	lowestCreatureSpeed(0)
+	lowestCreatureSpeed(0),
+	human(false)
 {
 	setNodeType(HERO);
 	ID = Obj::HERO;

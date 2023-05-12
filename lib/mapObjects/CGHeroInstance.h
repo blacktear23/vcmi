@@ -78,6 +78,7 @@ public:
 	ConstTransitivePtr<CGTownInstance> visitedTown; //set if hero is visiting town or in the town garrison
 	ConstTransitivePtr<CCommanderInstance> commander;
 	const CGBoat * boat = nullptr; //set to CGBoat when sailing
+	bool human;
 
 	static constexpr si32 UNINITIALIZED_PORTRAIT = -1;
 	static constexpr si32 UNINITIALIZED_MANA = -1;
@@ -168,6 +169,7 @@ public:
 	const std::set<SpellID> & getSpellsInSpellbook() const;
 	EAlignment::EAlignment getAlignment() const;
 	bool needsLastStack()const override;
+	void setHuman(bool human) { this->human = human; };
 
 	ui32 getTileCost(const TerrainTile & dest, const TerrainTile & from, const TurnInfo * ti) const; //move cost - applying pathfinding skill, road and terrain modifiers. NOT includes diagonal move penalty, last move levelling
 	TerrainId getNativeTerrain() const;

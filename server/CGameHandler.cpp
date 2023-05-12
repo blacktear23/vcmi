@@ -1881,7 +1881,7 @@ void CGameHandler::newTurn()
 			// reset retreated or surrendered heroes
 			auto maxmove = hero->maxMovePoints(true);
 			if (p != NULL && p->human) {
-				maxmove *= 10;
+				maxmove *= 4;
 			}
 			// if movement is greater than maxmove, we should decrease it
 			if (hero->movement != maxmove || hero->mana < hero->manaLimit())
@@ -1975,6 +1975,12 @@ void CGameHandler::newTurn()
 			// TODO: this code executed when bonuses of previous day not yet updated (this happen in NewTurn::applyGs). See issue 2356
 			hth.move = h->maxMovePointsCached(gs->map->getTile(h->visitablePos()).terType->isLand(), ti.get());
 			hth.mana = h->getManaNewTurn();
+			auto owner = h->getOwner();
+			const PlayerState * p = getPlayerState(owner);
+			if (p && p->human) {
+				hth.move *= 4;
+				h->human = true;
+			}
 
 			n.heroes.insert(hth);
 
@@ -4445,6 +4451,7 @@ bool CGameHandler::hireHero(const CGObjectInstance *obj, ui8 hid, PlayerColor pl
 		return false;
 	}
 
+	const_cast<CGHeroInstance*>(nh)->setHuman(p->human);
 	HeroRecruited hr;
 	hr.tid = obj->id;
 	hr.hid = nh->subID;
@@ -4466,6 +4473,7 @@ bool CGameHandler::hireHero(const CGObjectInstance *obj, ui8 hid, PlayerColor pl
 
 	if (newHero)
 	{
+		const_cast<CGHeroInstance*>(newHero)->setHuman(p->human);
 		sah.hid[hid] = newHero->subID;
 		sah.army[hid].clear();
 		sah.army[hid].setCreature(SlotID(0), newHero->type->initialArmy[0].creature, 1);

@@ -180,6 +180,9 @@ void HeroPathStorage::serialize(Handler & h, int version)
 	{
 		for (auto &p : paths)
 		{
+			auto hero = const_cast<CGHeroInstance*>(p.first);
+			hero->human = true;
+			hero->movement *= 4;
 			if (p.second.nodes.size())
 				pathsMap[p.first] = p.second.endPos();
 			else
