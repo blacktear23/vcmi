@@ -133,7 +133,8 @@ namespace AIPathfinding
 
 				if(boatNode->action == CGPathNode::UNKNOWN)
 				{
-					boatNode->specialAction = virtualBoat;
+					// boatNode->specialAction = virtualBoat;
+					boatNode->addSpecialAction(virtualBoat);
 					destination.blocked = false;
 					destination.action = CGPathNode::ENodeAction::EMBARK;
 					destination.node = boatNode;
