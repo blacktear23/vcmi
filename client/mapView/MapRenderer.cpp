@@ -448,7 +448,7 @@ std::shared_ptr<CAnimation> MapRendererObjects::getFlagAnimation(const CGObjectI
 	if(obj->ID == Obj::HERO)
 	{
 		assert(dynamic_cast<const CGHeroInstance *>(obj) != nullptr);
-		assert(obj->tempOwner.isValidPlayer());
+		// assert(obj->tempOwner.isValidPlayer());
 		return getAnimation(heroFlags[obj->tempOwner.getNum()], true);
 	}
 
