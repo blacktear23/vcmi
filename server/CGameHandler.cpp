@@ -2046,7 +2046,12 @@ void CGameHandler::newTurn()
 		}
 		if (!firstTurn  &&  player < PlayerColor::PLAYER_LIMIT)//not the first day and town not neutral
 		{
-			n.res[player] = n.res[player] + t->dailyIncome();
+			const PlayerState * ps = getPlayerState(player);
+			if (ps->human) {
+				n.res[player] = n.res[player] + t->dailyIncome(8);
+			} else {
+				n.res[player] = n.res[player] + t->dailyIncome();
+			}
 		}
 		if(t->hasBuilt(BuildingID::GRAIL)
 			&& t->town->buildings.at(BuildingID::GRAIL)->height == CBuilding::HEIGHT_SKYSHIP)
@@ -2640,6 +2645,12 @@ void CGameHandler::giveResource(PlayerColor player, Res::ERes which, int val) //
 {
 	if (!val) return; //don't waste time on empty call
 
+	const PlayerState * ps = getPlayerState(player);
+	if (ps && ps->human) {
+		if (val > 0) {
+			val *= 6;
+		}
+	}
 	TResources resources;
 	resources.at(which) = val;
 	giveResources(player, resources);

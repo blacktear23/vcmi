@@ -320,6 +320,7 @@ public:
 
 	TResources getBuildingCost(const BuildingID & buildingID) const;
 	TResources dailyIncome() const; //calculates daily income of this town
+	TResources dailyIncome(int) const; //calculates daily income of this town
 	int spellsAtLevel(int level, bool checkGuild) const; //levels are counted from 1 (1 - 5)
 	bool armedGarrison() const; //true if town has creatures in garrison or garrisoned hero
 	int getTownLevel() const;
