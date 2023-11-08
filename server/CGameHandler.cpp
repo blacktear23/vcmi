@@ -1775,6 +1775,7 @@ void CGameHandler::newTurn()
 		}
 	}
 
+	/*
 	std::map<ui32, ConstTransitivePtr<CGHeroInstance> > pool = gs->hpool.heroesPool;
 
 	for (auto& hp : pool)
@@ -1800,6 +1801,7 @@ void CGameHandler::newTurn()
 			}
 		}
 	}
+	*/
 
 	for (auto & elem : gs->players)
 	{
