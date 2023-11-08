@@ -1131,8 +1131,23 @@ int64_t CGameHandler::applyBattleEffects(BattleAttack & bat, std::shared_ptr<bat
 		bai.luckyStrike  = bat.lucky();
 		bai.unluckyStrike  = bat.unlucky();
 
+		const PlayerState *ap = getPlayerState(bai.attacker->getCasterOwner());
+		if (ap != NULL && ap->human) {
+				bai.isAttackerPlayer = true;
+		}
+		const PlayerState *dp = getPlayerState(bai.defender->getCasterOwner());
+		if (dp != NULL && dp->human) {
+				bai.isDefenderPlayer = true;
+		}
+
 		auto range = gs->curB->calculateDmgRange(bai);
 		bsa.damageAmount = gs->curB->getActualDamage(range.damage, attackerState->getCount(), getRandomGenerator());
+		if (ap != NULL && ap->human) {
+			bsa.damageAmount *= 2;
+		}
+		if (dp != NULL && dp->human) {
+			bsa.damageAmount *= 0.5;
+		}
 		CStack::prepareAttacked(bsa, getRandomGenerator(), bai.defender->acquireState()); //calculate casualties
 	}
 
@@ -1760,6 +1775,32 @@ void CGameHandler::newTurn()
 		}
 	}
 
+	std::map<ui32, ConstTransitivePtr<CGHeroInstance> > pool = gs->hpool.heroesPool;
+
+	for (auto& hp : pool)
+	{
+		auto hero = hp.second;
+		if (hero->isInitialized() && hero->stacks.size())
+		{
+			auto owner = hero->getOwner();
+			const PlayerState * p = getPlayerState(owner);
+			// reset retreated or surrendered heroes
+			auto maxmove = hero->maxMovePoints(true);
+			if (p != NULL && p->human) {
+				maxmove *= 4;
+			}
+			// if movement is greater than maxmove, we should decrease it
+			if (hero->movement != maxmove || hero->mana < hero->manaLimit())
+			{
+				NewTurn::Hero hth;
+				hth.id = hero->id;
+				hth.move = maxmove;
+				hth.mana = hero->getManaNewTurn();
+				n.heroes.insert(hth);
+			}
+		}
+	}
+
 	for (auto & elem : gs->players)
 	{
 		if (elem.first == PlayerColor::NEUTRAL)
@@ -1818,6 +1859,12 @@ void CGameHandler::newTurn()
 			// TODO: this code executed when bonuses of previous day not yet updated (this happen in NewTurn::applyGs). See issue 2356
 			hth.move = h->movementPointsLimitCached(gs->map->getTile(h->visitablePos()).terType->isLand(), ti.get());
 			hth.mana = h->getManaNewTurn();
+			auto owner = h->getOwner();
+			const PlayerState * p = getPlayerState(owner);
+			if (p && p->human) {
+				hth.move *= 4;
+				h->human = true;
+			}
 
 			n.heroes.insert(hth);
 
@@ -1883,7 +1930,12 @@ void CGameHandler::newTurn()
 		}
 		if (!firstTurn  &&  player < PlayerColor::PLAYER_LIMIT)//not the first day and town not neutral
 		{
-			n.res[player] = n.res[player] + t->dailyIncome();
+			const PlayerState * ps = getPlayerState(player);
+			if (ps->human) {
+				n.res[player] = n.res[player] + t->dailyIncome(8);
+			} else {
+				n.res[player] = n.res[player] + t->dailyIncome();
+			}
 		}
 		if(t->hasBuilt(BuildingID::GRAIL)
 			&& t->town->buildings.at(BuildingID::GRAIL)->height == CBuilding::HEIGHT_SKYSHIP)
@@ -2497,6 +2549,12 @@ void CGameHandler::giveResource(PlayerColor player, GameResID which, int val) //
 {
 	if (!val) return; //don't waste time on empty call
 
+	const PlayerState * ps = getPlayerState(player);
+	if (ps && ps->human) {
+		if (val > 0) {
+			val *= 6;
+		}
+	}
 	TResources resources;
 	resources[which] = val;
 	giveResources(player, resources);

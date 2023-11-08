@@ -19,7 +19,9 @@ BattleAttackInfo::BattleAttackInfo(const battle::Unit * Attacker, const battle::
 	shooting(Shooting),
 	attackerPos(BattleHex::INVALID),
 	defenderPos(BattleHex::INVALID),
-	chargeDistance(chargeDistance)
+	chargeDistance(chargeDistance),
+	isAttackerPlayer(false),
+	isDefenderPlayer(false)
 {}
 
 BattleAttackInfo BattleAttackInfo::reverse() const

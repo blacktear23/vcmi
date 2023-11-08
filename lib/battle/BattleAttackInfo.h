@@ -34,6 +34,9 @@ struct DLL_LINKAGE BattleAttackInfo
 	bool deathBlow     = false;
 	bool doubleDamage  = false;
 
+	bool isAttackerPlayer = false;
+	bool isDefenderPlayer = false;
+
 	BattleAttackInfo(const battle::Unit * Attacker, const battle::Unit * Defender, int chargeDistance, bool Shooting);
 	BattleAttackInfo reverse() const;
 };

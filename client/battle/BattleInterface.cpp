@@ -804,7 +804,7 @@ bool BattleInterface::hasAnimations()
 
 void BattleInterface::checkForAnimations()
 {
-	assert(!hasAnimations());
+	// assert(!hasAnimations());
 	if(hasAnimations())
 		logGlobal->error("Unexpected animations state: expected all animations to be over, but some are still ongoing!");
 

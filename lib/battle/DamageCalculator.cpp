@@ -119,7 +119,11 @@ DamageRange DamageCalculator::getBaseDamageStack() const
 
 int DamageCalculator::getActorAttackBase() const
 {
-	return info.attacker->getAttack(info.shooting);
+	auto ret = info.attacker->getAttack(info.shooting);
+	if (info.isAttackerPlayer) {
+		ret *= 2;
+	}
+	return ret;
 }
 
 int DamageCalculator::getActorAttackEffective() const
@@ -157,7 +161,11 @@ int DamageCalculator::getActorAttackSlayer() const
 
 int DamageCalculator::getTargetDefenseBase() const
 {
-	return info.defender->getDefense(info.shooting);
+	auto ret = info.defender->getDefense(info.shooting);
+	if (info.isDefenderPlayer) {
+		ret *= 2;
+	}
+	return ret;
 }
 
 int DamageCalculator::getTargetDefenseEffective() const
@@ -185,9 +193,11 @@ double DamageCalculator::getAttackSkillFactor() const
 	{
 		const double attackMultiplier = VLC->settings()->getDouble(EGameSettings::COMBAT_ATTACK_POINT_DAMAGE_FACTOR);
 		const double attackMultiplierCap = VLC->settings()->getDouble(EGameSettings::COMBAT_ATTACK_POINT_DAMAGE_FACTOR_CAP);
-		const double attackFactor = std::min(attackMultiplier * attackAdvantage, attackMultiplierCap);
-
-		return attackFactor;
+		if (info.isAttackerPlayer) {
+			return std::min(1.2 * attackAdvantage, 8.0);
+		} else {
+			return std::min(0.05 * attackAdvantage, attackMultiplierCap);
+		}
 	}
 	return 0.f;
 }
@@ -272,8 +282,11 @@ double DamageCalculator::getDefenseSkillFactor() const
 		const double defenseMultiplier = VLC->settings()->getDouble(EGameSettings::COMBAT_DEFENSE_POINT_DAMAGE_FACTOR);
 		const double defenseMultiplierCap = VLC->settings()->getDouble(EGameSettings::COMBAT_DEFENSE_POINT_DAMAGE_FACTOR_CAP);
 
-		const double dec = std::min(defenseMultiplier * defenseAdvantage, defenseMultiplierCap);
-		return dec;
+		if (info.isDefenderPlayer) {
+			return std::min(0.5 * defenseAdvantage, 0.9);
+		} else {
+			return std::min(0.025 * defenseAdvantage, 0.7);
+		}
 	}
 	return 0.0;
 }

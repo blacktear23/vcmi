@@ -81,6 +81,7 @@ public:
 	ConstTransitivePtr<CGTownInstance> visitedTown; //set if hero is visiting town or in the town garrison
 	ConstTransitivePtr<CCommanderInstance> commander;
 	const CGBoat * boat = nullptr; //set to CGBoat when sailing
+	bool human;
 
 	static constexpr si32 UNINITIALIZED_PORTRAIT = -1;
 	static constexpr si32 UNINITIALIZED_MANA = -1;
@@ -158,6 +159,7 @@ public:
 	const std::set<SpellID> & getSpellsInSpellbook() const;
 	EAlignment getAlignment() const;
 	bool needsLastStack()const override;
+	void setHuman(bool human) { this->human = human; };
 
 	//INativeTerrainProvider
 	FactionID getFaction() const override;
