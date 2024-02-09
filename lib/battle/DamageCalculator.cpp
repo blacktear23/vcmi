@@ -196,7 +196,7 @@ double DamageCalculator::getAttackSkillFactor() const
 		if (info.isAttackerPlayer) {
 			return std::min(1.2 * attackAdvantage, 8.0);
 		} else {
-			return std::min(0.05 * attackAdvantage, attackMultiplierCap);
+			return std::min(0.5 * attackAdvantage, attackMultiplierCap);
 		}
 	}
 	return 0.f;
@@ -285,7 +285,7 @@ double DamageCalculator::getDefenseSkillFactor() const
 		if (info.isDefenderPlayer) {
 			return std::min(0.5 * defenseAdvantage, 0.9);
 		} else {
-			return std::min(0.025 * defenseAdvantage, 0.7);
+			return std::min(0.25 * defenseAdvantage, 0.7);
 		}
 	}
 	return 0.0;

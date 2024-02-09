@@ -85,7 +85,8 @@ ui32 CGHeroInstance::getTileMovementCost(const TerrainTile & dest, const Terrain
 			ret = GameConstants::BASE_MOVEMENT_COST;
 	}
 	if (human) {
-		return 1;
+		// return 10;
+		return static_cast<ui32>(ret / 2);
 	}
 	return static_cast<ui32>(ret);
 }
