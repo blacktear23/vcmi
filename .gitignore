@@ -63,3 +63,5 @@ CMakeUserPresets.json
 
 # CLion
 .idea/
+
+.vscode/
