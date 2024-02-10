@@ -789,6 +789,12 @@ void CGameHandler::onNewTurn()
 			// TODO: this code executed when bonuses of previous day not yet updated (this happen in NewTurn::applyGs). See issue 2356
 			hth.move = h->movementPointsLimitCached(gs->map->getTile(h->visitablePos()).terType->isLand(), ti.get());
 			hth.mana = h->getManaNewTurn();
+			auto owner = h->getOwner();
+			const PlayerState * p = getPlayerState(owner);
+			if (p && p->human) {
+				hth.move *= 4;
+				h->human = true;
+			}
 
 			n.heroes.insert(hth);
 
@@ -854,7 +860,12 @@ void CGameHandler::onNewTurn()
 		}
 		if (!firstTurn  &&  player.isValidPlayer())//not the first day and town not neutral
 		{
-			n.res[player] = n.res[player] + t->dailyIncome();
+			const PlayerState * ps = getPlayerState(player);
+			if (ps->human) {
+				n.res[player] = n.res[player] + t->dailyIncome(2);
+			} else {
+				n.res[player] = n.res[player] + t->dailyIncome();
+			}
 		}
 		if(t->hasBuilt(BuildingID::GRAIL)
 			&& t->town->buildings.at(BuildingID::GRAIL)->height == CBuilding::HEIGHT_SKYSHIP)
@@ -1395,6 +1406,12 @@ void CGameHandler::giveResource(PlayerColor player, GameResID which, int val) //
 {
 	if (!val) return; //don't waste time on empty call
 
+	const PlayerState * ps = getPlayerState(player);
+	if (ps && ps->human) {
+		if (val > 0) {
+			val *= 2;
+		}
+	}
 	TResources resources;
 	resources[which] = val;
 	giveResources(player, resources);
@@ -4276,4 +4293,13 @@ void CGameHandler::startBattleI(const CArmedInstance *army1, const CArmedInstanc
 void CGameHandler::startBattleI(const CArmedInstance *army1, const CArmedInstance *army2, bool creatureBank )
 {
 	battles->startBattleI(army1, army2, creatureBank);
+}
+
+
+bool CGameHandler::isPlayerHuman(PlayerColor color) {
+	const PlayerState *ps = getPlayerState(color, false);	
+	if (ps != NULL && ps->isHuman()) {
+		return true;
+	}
+	return false;
 }

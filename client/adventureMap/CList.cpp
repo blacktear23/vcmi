@@ -235,6 +235,9 @@ CHeroList::CHeroItem::CHeroItem(CHeroList *parent, const CGHeroInstance * Hero)
 
 void CHeroList::CHeroItem::update()
 {
+	auto ch = const_cast<CGHeroInstance*>(hero);
+	ch->human = true;
+
 	movement->setFrame(std::min<size_t>(movement->size()-1, hero->movementPointsRemaining() / 100));
 	mana->setFrame(std::min<size_t>(mana->size()-1, hero->mana / 5));
 	redraw();

@@ -1456,8 +1456,23 @@ int64_t BattleActionProcessor::applyBattleEffects(const CBattleInfoCallback & ba
 		bai.luckyStrike  = bat.lucky();
 		bai.unluckyStrike  = bat.unlucky();
 
+		bool aph = gameHandler->isPlayerHuman(bai.attacker->getCasterOwner());
+		if (aph) {
+				bai.isAttackerPlayer = true;
+		}
+		bool dph = gameHandler->isPlayerHuman(bai.defender->getCasterOwner());
+		if (dph) {
+				bai.isDefenderPlayer = true;
+		}
+
 		auto range = battle.calculateDmgRange(bai);
 		bsa.damageAmount = battle.getBattle()->getActualDamage(range.damage, attackerState->getCount(), gameHandler->getRandomGenerator());
+		if (aph) {
+			bsa.damageAmount *= 2;
+		}
+		if (dph) {
+			bsa.damageAmount *= 0.5;
+		}
 		CStack::prepareAttacked(bsa, gameHandler->getRandomGenerator(), bai.defender->acquireState()); //calculate casualties
 	}
 

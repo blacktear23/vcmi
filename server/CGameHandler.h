@@ -221,6 +221,7 @@ public:
 	void objectVisitEnded(const CObjectVisitQuery &query);
 	bool dig(const CGHeroInstance *h);
 	void moveArmy(const CArmedInstance *src, const CArmedInstance *dst, bool allowMerging);
+	bool isPlayerHuman(PlayerColor color);
 
 	template <typename Handler> void serialize(Handler &h, const int version)
 	{

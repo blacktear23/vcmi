@@ -218,6 +218,28 @@ TResources CGTownInstance::dailyIncome() const
 	return ret;
 }
 
+TResources CGTownInstance::dailyIncome(int factor) const
+{
+	TResources ret;
+	for(const auto & p : town->buildings)
+	{
+		BuildingID buildingUpgrade;
+
+		for(const auto & p2 : town->buildings)
+		{
+			if (p2.second->upgrade == p.first)
+			{
+				buildingUpgrade = p2.first;
+			}
+		}
+		if (!hasBuilt(buildingUpgrade)&&(hasBuilt(p.first)))
+		{
+			ret += p.second->produce * factor;
+		}
+	}
+	return ret;
+}
+
 bool CGTownInstance::hasFort() const
 {
 	return hasBuilt(BuildingID::FORT);
